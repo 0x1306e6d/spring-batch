@@ -47,6 +47,7 @@ import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
 import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.core.KotlinDetector;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -463,8 +464,10 @@ public class FlatFileItemReaderBuilder<T> {
 				if (this.targetType != null && this.targetType.isRecord()) {
 					RecordFieldSetMapper<T> mapper = new RecordFieldSetMapper<>(this.targetType);
 					lineMapper.setFieldSetMapper(mapper);
-				}
-				else {
+				} else if (this.targetType != null && KotlinDetector.isKotlinType(this.targetType) && JvmClassMappingKt.getKotlinClass(type);) {
+					RecordFieldSetMapper<T> mapper = new RecordFieldSetMapper<>(this.targetType);
+					lineMapper.setFieldSetMapper(mapper);
+				} else {
 					BeanWrapperFieldSetMapper<T> mapper = new BeanWrapperFieldSetMapper<>();
 					mapper.setTargetType(this.targetType);
 					mapper.setPrototypeBeanName(this.prototypeBeanName);
